@@ -1,5 +1,6 @@
 from requests_html import HTMLSession
 import requests as _requests
+from datetime import date
 
 
 def montar_url(url, page):
@@ -18,4 +19,8 @@ def render_dados(url):
     s = HTMLSession()
     r = s.get(url)
     r.html.render()
-    return r.html
+    return r.html.raw_html
+
+
+def get_data_hoje():
+    return date.today().strftime("%Y-%m-%d")

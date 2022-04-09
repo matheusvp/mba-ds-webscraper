@@ -1,8 +1,6 @@
 import webscraper.scrapers.scraper_utils as _utils
 from bs4 import BeautifulSoup
-
 from webscraper.scrapers.vaga import Vaga
-from datetime import date
 
 
 def obter_dados(CONFIG):
@@ -98,7 +96,7 @@ def _processar_vaga(url):
     # Dados que não existem nesse website
     vaga.id = "N/A"
     vaga.url = url
-    vaga.data_scraping = date.today().strftime("%Y-%m-%d")
+    vaga.data_scraping = _utils.get_data_hoje()
     vaga.data_publicacao = "N/A"
     vaga.empresa = "N/A"
 

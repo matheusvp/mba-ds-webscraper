@@ -8,7 +8,7 @@
 trampos.url_base="https://trampos.co/oportunidades"
 trampos.url_listagem="https://trampos.co/api/v2/opportunities?lc=&tr=desenvolvedor&page={page}"
 trampos.pagina_inicial=1
-trampos.parar_apos_x_vagas=100
+trampos.parar_apos_x_vagas=3
 
 programathor.url_base="https://programathor.com.br"
 programathor.url_listagem="https://programathor.com.br/jobs/page/{page}"
