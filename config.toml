@@ -18,4 +18,4 @@ programathor.parar_apos_x_vagas=100
 geekhunter.url_base="https://www.geekhunter.com.br"
 geekhunter.url_listagem="https://www.geekhunter.com.br/vagas?page={page}"
 geekhunter.pagina_inicial=1
-geekhunter.parar_apos_x_vagas=30
+geekhunter.parar_apos_x_vagas=100

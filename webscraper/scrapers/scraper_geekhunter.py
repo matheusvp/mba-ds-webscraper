@@ -64,6 +64,9 @@ def _processar_vagas(lista_url_das_vagas):
     """ A partir da lista de url das vagas, acessa uma a uma e extrai as informações relevantes
         retornando um array de Vagas"""
 
+    if len(lista_url_das_vagas) <= 0:
+        return None
+
     i = 1
     vagas = []
     for url in lista_url_das_vagas:
@@ -72,6 +75,12 @@ def _processar_vagas(lista_url_das_vagas):
         if vaga is not None:
             vagas.append(vaga)
         i += 1
+
+    if len(vagas) <= 0:
+        return None
+
+    for vaguinha in vagas:
+        print(', '.join("%s: %s \n" % item for item in vars(vaguinha).items()))
 
     return vagas
 
@@ -95,13 +104,12 @@ def _processar_vaga(url):
     vaga.data_scraping = date.today().strftime("%Y-%m-%d")
     vaga.data_publicacao = "N/A"
     vaga.empresa = "N/A"
-    vaga.descricao = "N/A"
 
     # Captura cada uma das informações da vaga a partir da pagina web
     vaga.titulo = _processar_titulo(main_card)
     vaga.local_trabalho = _processar_local_trabalho(main_card)
     vaga.responsabilidades = _processar_responsabilidades(full_description)
-    vaga.salario = _processar_salario(main_card)
+    vaga.salario, vaga.modelo_contratação = _processar_salario(main_card)
     vaga.beneficios = _processar_beneficios(full_description)
     vaga.requisitos = _processar_requisitos(full_description)
 
@@ -156,7 +164,7 @@ def _processar_responsabilidades(full_description):
     if div_descricao is None:
         return "N/A"
 
-    return div_descricao.getText().strip()
+    return div_descricao.getText().strip().replace("•", "").replace("-", "")
 
 
 def _processar_salario(main_card):
@@ -164,12 +172,22 @@ def _processar_salario(main_card):
 
     # Se nao localizar a tag retorna N/A
     if span_salario is None:
-        return "N/A"
+        return "N/A", "N/A"
 
     span_salario = span_salario.parent
 
-    # Retorna Salario
-    return span_salario.get_text().replace("\n", "")
+    # Trata o dado
+    salario = span_salario.get_text().replace("\n", "")
+
+    posicao_modelo_contratacao = salario.find(":")
+    if posicao_modelo_contratacao == -1:
+        modelo = "N/A"
+    else:
+        modelo = salario[:posicao_modelo_contratacao]
+        salario = salario[posicao_modelo_contratacao+1:]
+
+    # Retorna Salario e modelo
+    return salario, modelo
 
 
 def _processar_beneficios(full_description):
@@ -207,4 +225,8 @@ def _processar_requisitos(full_description):
     if div_beneficios is None:
         return "N/A"
 
-    return div_beneficios.get_text(strip=True, separator=";").replace(";;", ";").replace(".;", ";").replace(":;", ";")
+    requisitos = div_beneficios.get_text(strip=True, separator=";")
+    requisitos = requisitos.replace(";;", ";").replace(".;", ";").replace(":;", ";").replace("•", "")
+    requisitos = requisitos.replace("; ", ";").replace("-", "").strip()
+
+    return requisitos
