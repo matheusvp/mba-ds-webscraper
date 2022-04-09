@@ -29,12 +29,12 @@ def app():
     print("Iniciando extração de dados...")
 
 
-    # obter_dados_programathor()
+    obter_dados_programathor()
 
     # feitos
     # obter_dados_geekhunter()
     # obter_dados_8itempregare()
-    obter_dados_trampos()
+    # obter_dados_trampos()
 
 if __name__ == "__main__":
     app()

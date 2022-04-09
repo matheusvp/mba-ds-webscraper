@@ -87,7 +87,7 @@ def _processar_vaga(url):
     div_dados = dados_bs.find("div", class_="opportunity-body")
     vaga = Vaga()
 
-    # Se não encontrar o main-card ou full description não temos dados da vaga então não retornamos a mesma (None)
+    # Se não encontrar os dados não temos dados da vaga então não retornamos a mesma (None)
     if div_dados is None:
         return None
 
