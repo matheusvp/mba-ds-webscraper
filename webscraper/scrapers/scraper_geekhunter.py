@@ -79,9 +79,6 @@ def _processar_vagas(lista_url_das_vagas):
     if len(vagas) <= 0:
         return None
 
-    for vaguinha in vagas:
-        print(', '.join("%s: %s \n" % item for item in vars(vaguinha).items()))
-
     return vagas
 
 

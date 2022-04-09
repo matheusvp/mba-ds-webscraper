@@ -1,7 +1,9 @@
 import webscraper.scrapers.scraper_utils as _utils
+import json
 from webscraper.scrapers.vaga import Vaga
 from bs4 import BeautifulSoup
-import json
+from datetime import date
+
 
 
 def obter_dados(CONFIG):
@@ -16,9 +18,8 @@ def obter_dados(CONFIG):
         return None
 
     # Extrai a informação das vagas
-    #vagas = _processar_vagas(lista_url_das_vagas)
-    #return vagas
-    return None
+    vagas = _processar_vagas(lista_url_das_vagas)
+    return vagas
 
 
 def _obter_lista_url_das_vagas(CONFIG):
@@ -51,7 +52,7 @@ def _obter_lista_url_das_vagas(CONFIG):
         dados_json = json.loads(dados_raw)
 
     print(f"Total de vagas capturadas: {len(lista_url_vagas)}")
-    print(f"Lista de vagas capturadas: {lista_url_vagas}")
+    # print(f"Lista de vagas capturadas: {lista_url_vagas}")
     if len(lista_url_vagas) == 0:
         return None
 
@@ -61,11 +62,22 @@ def _obter_lista_url_das_vagas(CONFIG):
 def _processar_vagas(lista_url_das_vagas):
     """ A partir da lista de url das vagas, acessa uma a uma e extrai as informações relevantes """
 
-    url1 = "https://8it.empregare.com/pt-br/vaga-desenvolvedor-net-core-pleno_22646"
-    url2 = "https://8it.empregare.com/pt-br/vaga-banco-de-talentos-profissionais-de-ti_22488"
-    _processar_vaga(url1)
+    if len(lista_url_das_vagas) <= 0:
+        return None
 
-    return 1
+    i = 1
+    vagas = []
+    for url in lista_url_das_vagas:
+        print(f"Processando vaga {i} de {len(lista_url_das_vagas)}")
+        vaga = _processar_vaga(url)
+        if vaga is not None:
+            vagas.append(vaga)
+        i += 1
+
+    if len(vagas) <= 0:
+        return None
+
+    return vagas
 
 def _processar_vaga(url):
     """ A partir de uma pagina html de uma vaga e da url extrai os dados da vaga"""
@@ -84,16 +96,123 @@ def _processar_vaga(url):
     vaga.id = "N/A"
     vaga.url = url
     vaga.data_scraping = date.today().strftime("%Y-%m-%d")
-    # vaga.data_publicacao = "N/A"
-    # vaga.empresa = "N/A"
-    # vaga.descricao = "N/A"
+    vaga.empresa = "N/A"
 
     # Captura cada uma das informações da vaga a partir da pagina web
-    # vaga.titulo = _processar_titulo(main_card)
-    # vaga.local_trabalho = _processar_local_trabalho(main_card)
-    # vaga.responsabilidades = _processar_responsabilidades(full_description)
-    # vaga.salario = _processar_salario(main_card)
-    # vaga.beneficios = _processar_beneficios(full_description)
-    # vaga.requisitos = _processar_requisitos(full_description)
+    vaga.data_publicacao = _processar_data_publicacao(div_container_detalhes)
+    vaga.titulo = _processar_titulo(div_container_titulo)
+    vaga.local_trabalho = _processar_local_trabalho(div_container_detalhes)
+    vaga.responsabilidades = _processar_responsabilidades(div_container_detalhes)
+    vaga.salario = _processar_salario(div_container_titulo)
+    vaga.modelo_contratação = _processar_modelo_contratacao(div_container_detalhes)
+    vaga.beneficios = _processar_beneficios(div_container_detalhes)
+    vaga.requisitos = _processar_requisitos(div_container_detalhes)
 
     return vaga
+
+
+def _processar_data_publicacao(div_container_detalhes):
+    data_publicacao = "N/A"
+
+    # É a terceura small tag da pagina
+    tag_small = div_container_detalhes.find_all("small")
+
+    if len(tag_small) < 3:
+        return data_publicacao
+
+    tag_b = tag_small[2].b
+    if tag_b is None:
+        return data_publicacao
+    data_publicacao = tag_b.getText()
+    return data_publicacao
+
+
+
+def _processar_titulo(div_container_titulo):
+    tag_div_titulo = div_container_titulo.find("div", class_="col-md-9 vaga-titulo")
+    if tag_div_titulo is None:
+        return "N/A"
+
+    tag_h1 = tag_div_titulo.h1
+    if tag_h1 is None:
+        return "N/A"
+
+    return tag_h1.get_text(strip=True)
+
+
+def _processar_local_trabalho(div_container_detalhes):
+    tag_ul = div_container_detalhes.find("ul", class_="list-unstyled list-localidade-vaga row")
+    if tag_ul is None:
+        return "N/A"
+
+    tag_li = tag_ul.li
+    if tag_li is None:
+        return "N/A"
+
+    return tag_li.get_text(strip=True)
+
+
+
+def _processar_responsabilidades(div_container_detalhes):
+    tag_div_desc = div_container_detalhes.find("div", class_="vaga-descricao")
+    if tag_div_desc is None:
+        return "N/A"
+
+    return tag_div_desc.get_text(strip=True,separator=";")
+
+
+def _processar_salario(div_container_titulo):
+    tag_div_titulo = div_container_titulo.find("div", class_="col-md-9 vaga-titulo")
+    if tag_div_titulo is None:
+        return "N/A"
+
+    tag_li = tag_div_titulo.find("li", class_="titulo-itens container-Salario")
+    if tag_li is None:
+        return "N/A"
+
+    tag_span = tag_li.span
+    if tag_span is None:
+        return "N/A"
+
+    salario = tag_span
+    if salario == "Salário a combinar":
+        salario = "N/A"
+    return salario
+
+
+def _processar_modelo_contratacao(div_container_detalhes):
+    tag_div_regime = div_container_detalhes.find("div", class_="col-sm-4 container-RegimeContratacao")
+    if tag_div_regime is None:
+        return "N/A"
+
+    tag_p = tag_div_regime.p
+    if tag_p is None:
+        return "N/A"
+
+    return tag_p.get_text(strip=True)
+
+
+def _processar_beneficios(div_container_detalhes):
+    tag_div_desc = div_container_detalhes.find_all("div", class_="vaga-descricao")
+    # Terceira div class_="vaga-descricao"
+    if len(tag_div_desc) <3:
+        return "N/A"
+
+    beneficios = tag_div_desc[2].get_text(strip=True, separator=";")
+    if beneficios == "Nenhum benefício informado":
+        return "N/A"
+
+    return beneficios
+
+
+def _processar_requisitos(div_container_detalhes):
+    tag_div_desc = div_container_detalhes.find_all("div", class_="vaga-descricao")
+    # Terceira div class_="vaga-descricao"
+    if len(tag_div_desc) < 2:
+        return "N/A"
+
+    beneficios = tag_div_desc[1].get_text(strip=True, separator=";")
+    if beneficios == "Nenhum benefício informado":
+        return "N/A"
+
+    return tag_div_desc[1].get_text(strip=True, separator=";")
