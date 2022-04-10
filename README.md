@@ -10,7 +10,16 @@ Esse projeto utiliza Poetry. Para informações sobre como instalar o Poetry, pr
 ```bash
   poetry install
 ```
-    
+   
+## Configuração
+
+O arquivo *config.toml* contém a configuração do projeto. Por favor, altere o parâmetro do arquivo de saida com um caminho e nome adequado para você.
+
+```bash
+  arquivo="/tmp/output.csv"
+```
+
+
 ## Usage/Examples
 
 O comando abaixo executa o projeto:
