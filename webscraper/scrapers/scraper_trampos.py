@@ -2,6 +2,7 @@ import json
 import webscraper.scrapers.scraper_utils as _utils
 from bs4 import BeautifulSoup
 from webscraper.scrapers.vaga import Vaga
+import time
 
 
 def obter_dados(CONFIG):
@@ -68,6 +69,8 @@ def _processar_vagas(lista_url_das_vagas):
     vagas = []
     for url in lista_url_das_vagas:
         print(f"Processando vaga {i} de {len(lista_url_das_vagas)}")
+        if i % 20 == 0:
+            time.sleep(20)
         vaga = _processar_vaga(url)
         if vaga is not None:
             vagas.append(vaga)
@@ -83,6 +86,8 @@ def _processar_vaga(url):
     """ A partir de uma pagina html de uma vaga e da url extrai os dados da vaga"""
 
     dados_raw = _utils.render_dados(url)
+    if dados_raw is None:
+        return None
     dados_bs = BeautifulSoup(dados_raw, 'html.parser')
     div_dados = dados_bs.find("div", class_="opportunity-body")
     vaga = Vaga()

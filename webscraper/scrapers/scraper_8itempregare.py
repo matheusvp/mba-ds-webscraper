@@ -82,6 +82,8 @@ def _processar_vaga(url):
     """ A partir de uma pagina html de uma vaga e da url extrai os dados da vaga"""
 
     dados_raw = _utils.get_dados(url)
+    if dados_raw is None:
+        return None
     dados_bs = BeautifulSoup(dados_raw, 'html.parser')
     div_container_titulo = dados_bs.find("div", class_="container-fluid bg-gradient container-titulo-vaga")
     div_container_detalhes = dados_bs.find("div", class_="col-md-9 container-detalhes-vaga")
