@@ -23,4 +23,4 @@ def render_dados(url):
 
 
 def get_data_hoje():
-    return date.today().strftime("%Y-%m-%d")
+    return date.today().strftime("%Y%m%d")

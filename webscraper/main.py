@@ -5,6 +5,7 @@ import webscraper.scrapers.scraper_geekhunter as _scraper_geekhunter
 import webscraper.scrapers.data_wrangling as _data_wrangling
 import toml
 import sys
+import csv
 
 
 # Carrega arquivo de configuração
@@ -54,6 +55,14 @@ def obter_todos_dados():
 def tratar_dados(vagas):
     return _data_wrangling.tratar_vagas(vagas)
 
+
+def gravar_dados(dados):
+    with open(CONFIG["arquivo"]["caminho"], "w") as stream:
+        writer = csv.writer(stream, delimiter='|', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        writer.writerow(CONFIG["arquivo"]["cabecalho"])
+        writer.writerows(dados)
+
+
 def app():
 
     # Extrair dados
@@ -71,6 +80,9 @@ def app():
     dados = tratar_dados(dados)
 
     # grava os dados em um arquivo csv
+    print("#########################################################")
+    print("Gravando os dados no arquivo...")
+    gravar_dados(dados)
 
 
 if __name__ == "__main__":
