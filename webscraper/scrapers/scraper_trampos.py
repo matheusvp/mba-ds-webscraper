@@ -103,7 +103,7 @@ def _processar_vaga(url):
     vaga.local_trabalho = _processar_local_trabalho(div_dados)
     vaga.responsabilidades = _processar_responsabilidades(div_dados)
     vaga.salario = _processar_salario(div_dados)
-    vaga.modelo_contratação = _processar_modelo_contratação(div_dados)
+    vaga.modelo_contratacao = _processar_modelo_contratação(div_dados)
     vaga.beneficios = _processar_beneficios(div_dados)
     vaga.requisitos = _processar_requisitos(div_dados)
 

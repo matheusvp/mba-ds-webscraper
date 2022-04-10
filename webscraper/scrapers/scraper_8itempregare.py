@@ -103,7 +103,7 @@ def _processar_vaga(url):
     vaga.local_trabalho = _processar_local_trabalho(div_container_detalhes)
     vaga.responsabilidades = _processar_responsabilidades(div_container_detalhes)
     vaga.salario = _processar_salario(div_container_titulo)
-    vaga.modelo_contratação = _processar_modelo_contratacao(div_container_detalhes)
+    vaga.modelo_contratacao = _processar_modelo_contratacao(div_container_detalhes)
     vaga.beneficios = _processar_beneficios(div_container_detalhes)
     vaga.requisitos = _processar_requisitos(div_container_detalhes)
 
@@ -173,7 +173,7 @@ def _processar_salario(div_container_titulo):
     if tag_span is None:
         return "N/A"
 
-    salario = tag_span
+    salario = tag_span.get_text(strip=True)
     if salario == "Salário a combinar":
         salario = "N/A"
     return salario

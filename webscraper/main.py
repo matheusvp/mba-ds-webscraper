@@ -2,7 +2,9 @@ import webscraper.scrapers.scraper_8itempregare as _scraper_8itempregare
 import webscraper.scrapers.scraper_trampos as _scraper_trampos
 import webscraper.scrapers.scraper_programathor as _scraper_programathor
 import webscraper.scrapers.scraper_geekhunter as _scraper_geekhunter
+import webscraper.scrapers.data_wrangling as _data_wrangling
 import toml
+import sys
 
 
 # Carrega arquivo de configuração
@@ -25,16 +27,51 @@ def obter_dados_geekhunter():
     return _scraper_geekhunter.obter_dados(CONFIG['geekhunter'])
 
 
+def obter_todos_dados():
+    dados = []
+    dados_tpm = obter_dados_geekhunter()
+    if dados_tpm is not None and len(dados_tpm) > 0:
+        dados += dados_tpm
+
+    dados_tpm = obter_dados_8itempregare()
+    if dados_tpm is not None and len(dados_tpm) > 0:
+        dados += dados_tpm
+
+    dados_tpm = obter_dados_programathor()
+    if dados_tpm is not None and len(dados_tpm) > 0:
+        dados += dados_tpm
+
+    dados_tpm = obter_dados_trampos()
+    if dados_tpm is not None and len(dados_tpm) > 0:
+        dados += dados_tpm
+
+    if len(dados) <= 0:
+        return None
+
+    return dados
+
+
+def tratar_dados(vagas):
+    return _data_wrangling.tratar_vagas(vagas)
+
 def app():
+
+    # Extrair dados
     print("Iniciando extração de dados...")
+    dados = obter_todos_dados()
 
+    # Se nenhum for extraído com sucesso termina o programa
+    if dados is None:
+        print("NENHUM dado extraído com sucesso")
+        sys.exit()
 
-    obter_dados_programathor()
+    # trata os dados
+    print("#########################################################")
+    print("Iniciando tratamento dos dados...")
+    dados = tratar_dados(dados)
 
-    # feitos
-    # obter_dados_geekhunter()
-    # obter_dados_8itempregare()
-    # obter_dados_trampos()
+    # grava os dados em um arquivo csv
+
 
 if __name__ == "__main__":
     app()

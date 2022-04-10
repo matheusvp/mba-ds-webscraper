@@ -3,7 +3,7 @@
 8itempregare.url_base="https://8it.empregare.com"
 8itempregare.url_listagem="https://8it.empregare.com/api/pt-br/vagas/buscar?Pag={page}&q=&empresa=QdOcUw7QEYA%7C&hotSiteUrl=8it&carregarFiltro=true&carregarLista=true"
 8itempregare.pagina_inicial=1
-8itempregare.parar_apos_x_vagas=1
+8itempregare.parar_apos_x_vagas=4
 
 trampos.url_base="https://trampos.co/oportunidades"
 trampos.url_listagem="https://trampos.co/api/v2/opportunities?lc=&tr=desenvolvedor&page={page}"

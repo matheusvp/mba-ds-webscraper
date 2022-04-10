@@ -104,7 +104,7 @@ def _processar_vaga(url):
     vaga.titulo = _processar_titulo(main_card)
     vaga.local_trabalho = _processar_local_trabalho(main_card)
     vaga.responsabilidades = _processar_responsabilidades(full_description)
-    vaga.salario, vaga.modelo_contratação = _processar_salario(main_card)
+    vaga.salario, vaga.modelo_contratacao = _processar_salario(main_card)
     vaga.beneficios = _processar_beneficios(full_description)
     vaga.requisitos = _processar_requisitos(full_description)
 
@@ -125,7 +125,7 @@ def _processar_titulo(main_card):
         return "N/A"
 
     # Retorna titulo
-    return h1_tag.getText()
+    return h1_tag.get_text(strip=True)
 
 
 def _processar_local_trabalho(main_card):
@@ -159,7 +159,7 @@ def _processar_responsabilidades(full_description):
     if div_descricao is None:
         return "N/A"
 
-    return div_descricao.getText().strip().replace("•", "").replace("-", "")
+    return div_descricao.get_text(strip=True, separator=";")
 
 
 def _processar_salario(main_card):
@@ -172,7 +172,7 @@ def _processar_salario(main_card):
     span_salario = span_salario.parent
 
     # Trata o dado
-    salario = span_salario.get_text().replace("\n", "")
+    salario = span_salario.get_text(strip=True).replace("\n", "")
 
     posicao_modelo_contratacao = salario.find(":")
     if posicao_modelo_contratacao == -1:
@@ -196,10 +196,10 @@ def _processar_beneficios(full_description):
         strong = div_beneficio.strong
         if strong is None:
             beneficios += ""
-        beneficios += strong.get_text()
+        beneficios += strong.get_text(strip=True)
         beneficios += ";"
 
-    beneficios.replace(";;", ";").replace(".;", ";").replace(":;", ";")
+    beneficios
     return beneficios
 
 
@@ -221,7 +221,5 @@ def _processar_requisitos(full_description):
         return "N/A"
 
     requisitos = div_beneficios.get_text(strip=True, separator=";")
-    requisitos = requisitos.replace(";;", ";").replace(".;", ";").replace(":;", ";").replace("•", "")
-    requisitos = requisitos.replace("; ", ";").replace("-", "").strip()
 
     return requisitos

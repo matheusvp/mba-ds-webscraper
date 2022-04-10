@@ -9,5 +9,5 @@ class Vaga:
     responsabilidades = "N/A"
     requisitos = "N/A"
     salario = "N/A"
-    modelo_contratação = "N/A"
+    modelo_contratacao = "N/A"
     beneficios = "N/A"
