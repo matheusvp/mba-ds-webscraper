@@ -39,7 +39,7 @@ def _obter_lista_url_das_vagas(CONFIG):
 
     # Para se a request para a url de listagem nao retornar nada
     # Ou se ela retornar dados: [] (se eu chamo uma pagina que nao existe dados esse é o comportamento
-    # Ou ainda se ja tivermos capturado 100 vagas
+    # Ou ainda se ja tivermos capturado o número configurado de vagas (ponto de parada)
     while dados_raw is not None and len(dados_json.get("dados")) > 0 and len(lista_url_vagas) < ponto_parada:
         print(f"Buscando vagas na url: {url}")
         for vaga in dados_json.get("dados"):

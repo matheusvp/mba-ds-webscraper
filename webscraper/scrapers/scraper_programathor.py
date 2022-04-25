@@ -39,7 +39,7 @@ def _obter_lista_url_das_vagas(CONFIG):
 
     # Para se a request para a url de listagem nao retornar nada
     # Ou se ela nao conter dados (div_tags)
-    # Ou ainda se ja tivermos capturado 100 vagas
+    # Ou ainda se ja tivermos capturado o número configurado de vagas (ponto de parada)
     while dados_raw is not None and len(div_tags) > 0 and len(lista_url_vagas) < ponto_parada:
         print(f"Buscando vagas na url: {url}")
         for a_tag in div_tags:
